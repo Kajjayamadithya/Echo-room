@@ -177,7 +177,7 @@ export function getRandomAlias(): string {
 export function classifyEmotion(text: string): Emotion {
   const lower = text.toLowerCase();
   if (/excited|thrilled|can't wait|pumped|stoked/.test(lower)) return "excited";
-  if (/happy|joy|smile|cheerful|glad|delighted|wonderful|great day|love it|loving|fantastic|amazing|awesome|feeling good|feel good|feels good|beautiful|perfect|blessed|yay|woohoo|excellent|superb|nice day|great time|so good|really good|pretty good/.test(lower)) return "happy";
+  if (/happ(y|ier|iest)|joy(ful|ous)?|smil(e|ing)|cheerful|glad|delight(ed|ful)?|wonderful|great day|love it|loving|fantastic|amazing|awesome|feeling good|feel good|feels good|beautiful|perfect(ly)?|blessed|yay|woohoo|excellent|superb|nice(st)?|best|greatest|most wonderful|loveliest|prettiest|finest|brilliant|magnificent|terrific|marvelous|splendid|so good|really good|pretty good/.test(lower)) return "happy";
   if (/disappoint|letdown|let down|expected more|not what i|frustrated|underwhelm/.test(lower)) return "disappointed";
   if (/lonely|alone|no one|nobody|isolated|by myself|no friends/.test(lower)) return "lonely";
   if (/stress|pressure|too much|burned out|burnout|overwhelm|exhausted|overwork/.test(lower)) return "stressed";
