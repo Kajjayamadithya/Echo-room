@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 interface AuthContextType {
   isLoggedIn: boolean;
   userEmail: string | null;
+  userName: string | null;
   login: (email: string, password: string) => boolean;
   logout: () => void;
 }
@@ -10,29 +11,34 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const VALID_CREDENTIALS = [
-  { email: "tarunadithya2006@gmail.com", password: "Adithya123" },
-  { email: "pranavkrishna2796@gmail.com", password: "pk@29" },
-  { email: "thapan23@gmail.com", password: "pachipulusu@7" },
-  { email: "lokesh1@gmail.com", password: "loki@23" },
+  { name: "Tarun Adithya", email: "tarunadithya2006@gmail.com", password: "Adithya123" },
+  { name: "Pranav", email: "pranavkrishna2796@gmail.com", password: "pk@29" },
+  { name: "Thapan", email: "thapan23@gmail.com", password: "pachipulusu@7" },
+  { name: "Lokesh", email: "lokesh1@gmail.com", password: "loki@23" },
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("echoroom_auth");
     if (stored) {
       setIsLoggedIn(true);
       setUserEmail(stored);
+      const cred = VALID_CREDENTIALS.find(c => c.email === stored);
+      setUserName(cred?.name ?? null);
     }
   }, []);
 
   const login = (email: string, password: string): boolean => {
-    if (VALID_CREDENTIALS.some(c => c.email === email && c.password === password)) {
+    const cred = VALID_CREDENTIALS.find(c => c.email === email && c.password === password);
+    if (cred) {
       localStorage.setItem("echoroom_auth", email);
       setIsLoggedIn(true);
       setUserEmail(email);
+      setUserName(cred.name);
       return true;
     }
     return false;
@@ -42,10 +48,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("echoroom_auth");
     setIsLoggedIn(false);
     setUserEmail(null);
+    setUserName(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userEmail, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userEmail, userName, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
