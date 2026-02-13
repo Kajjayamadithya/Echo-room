@@ -23,17 +23,19 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 const AppRoutes = () => (
-  <Routes>
-    <Route path="/" element={<Landing />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
-    <Route path="/rooms" element={<ProtectedRoute><RoomsDashboard /></ProtectedRoute>} />
-    <Route path="/room/:id" element={<ProtectedRoute><RoomPage /></ProtectedRoute>} />
-    <Route path="/create-room" element={<ProtectedRoute><CreateRoom /></ProtectedRoute>} />
-    <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-    <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-    <Route path="*" element={<NotFound />} />
-  </Routes>
+  <AuthProvider>
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/rooms" element={<ProtectedRoute><RoomsDashboard /></ProtectedRoute>} />
+      <Route path="/room/:id" element={<ProtectedRoute><RoomPage /></ProtectedRoute>} />
+      <Route path="/create-room" element={<ProtectedRoute><CreateRoom /></ProtectedRoute>} />
+      <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+      <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </AuthProvider>
 );
 
 const App = () => (
@@ -42,9 +44,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
+        <AppRoutes />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
