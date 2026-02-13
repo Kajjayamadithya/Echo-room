@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import MoodChart from "@/components/MoodChart";
@@ -10,6 +10,7 @@ import {
   Users, MessageCircle, AlertTriangle, Shield, Flag, Bot,
   Trash2, Eye, ShieldAlert, Lock, Plus, Search, X,
 } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
 
 const POSTS_KEY = "echoroom_posts";
 const WARNINGS_KEY = "echoroom_warnings";
@@ -48,6 +49,9 @@ export default function AdminDashboard() {
   const [warnings, setWarnings] = useState<Record<string, string[]>>(loadWarnings());
   const [activeTab, setActiveTab] = useState<"overview" | "rooms" | "users" | "moderation">("overview");
   const [searchUser, setSearchUser] = useState("");
+  const [warnTarget, setWarnTarget] = useState<string | null>(null);
+  const [warnReason, setWarnReason] = useState("");
+  const warnInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setRooms(getAllRooms());
@@ -125,14 +129,24 @@ export default function AdminDashboard() {
   };
 
   const handleWarnUser = (userKey: string) => {
-    const reason = prompt("Enter warning reason:");
-    if (reason) {
-      const updated = { ...warnings };
-      if (!updated[userKey]) updated[userKey] = [];
-      updated[userKey].push(`${new Date().toLocaleDateString()}: ${reason}`);
-      setWarnings(updated);
-      saveWarnings(updated);
-    }
+    setWarnTarget(userKey);
+    setWarnReason("");
+    setTimeout(() => warnInputRef.current?.focus(), 100);
+  };
+
+  const submitWarning = () => {
+    if (!warnTarget || !warnReason.trim()) return;
+    const updated = { ...warnings };
+    if (!updated[warnTarget]) updated[warnTarget] = [];
+    updated[warnTarget].push(`${new Date().toLocaleDateString()}: ${warnReason.trim()}`);
+    setWarnings(updated);
+    saveWarnings(updated);
+    toast.success(`Warning sent to ${warnTarget}`, {
+      style: { background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: "12px" },
+      iconTheme: { primary: "#22C55E", secondary: "#fff" },
+    });
+    setWarnTarget(null);
+    setWarnReason("");
   };
 
   const handleDeletePost = (postId: string) => {
@@ -166,7 +180,48 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Toaster />
       <Navbar />
+
+      {/* Warn Modal */}
+      {warnTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-2 mb-4">
+              <ShieldAlert size={20} className="text-accent" />
+              <h3 className="font-display text-lg font-bold text-foreground">Warn User</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Sending warning to <span className="font-semibold text-foreground">{warnTarget}</span>
+            </p>
+            <input
+              ref={warnInputRef}
+              type="text"
+              value={warnReason}
+              onChange={(e) => setWarnReason(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submitWarning()}
+              placeholder="Enter warning reason..."
+              className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring mb-4"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => { setWarnTarget(null); setWarnReason(""); }}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitWarning}
+                disabled={!warnReason.trim()}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground hover:bg-accent/90 transition-colors disabled:opacity-50"
+              >
+                Send Warning
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4 py-10">
         <div className="mb-8">
           <h1 className="font-display text-3xl font-bold text-foreground">Admin Dashboard</h1>
