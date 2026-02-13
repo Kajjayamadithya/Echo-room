@@ -15,7 +15,7 @@ function getStoredPosts(): Post[] {
 }
 
 export default function UserProfile() {
-  const { userEmail } = useAuth();
+  const { userEmail, userName } = useAuth();
   const allRooms = getAllRooms();
   const storedPosts = getStoredPosts();
   const userPostCount = storedPosts.length;
@@ -32,7 +32,7 @@ export default function UserProfile() {
               <User size={36} />
             </div>
             <div>
-              <h1 className="font-display text-2xl font-bold text-foreground">Tarun Adithya</h1>
+              <h1 className="font-display text-2xl font-bold text-foreground">{userName ?? "User"}</h1>
               <p className="text-sm text-muted-foreground">{userEmail}</p>
               <div className="mt-3 flex items-center gap-4 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-1"><MessageCircle size={14} /> {userPostCount} posts</span>
