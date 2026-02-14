@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Post, Reply, isToxic } from "@/lib/mockData";
 import { checkToxicity, autoWarnUser } from "@/lib/aiService";
 import EmotionBadge from "./EmotionBadge";
-import { Clock, AlertTriangle, Bot, Flag, Send, MessageCircle, Loader2 } from "lucide-react";
+import { Clock, AlertTriangle, Bot, Flag, Send, MessageCircle, Loader2, Heart } from "lucide-react";
 import toast from "react-hot-toast";
 
 function timeAgo(timestamp: string): string {
@@ -25,6 +25,20 @@ export default function PostCard({ post, onReply, currentUserName }: PostCardPro
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [toxicWarning, setToxicWarning] = useState("");
   const [isChecking, setIsChecking] = useState(false);
+  const [likes, setLikes] = useState<Record<string, number>>({});
+  const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
+
+  const toggleLike = (replyId: string) => {
+    setLikedByMe(prev => {
+      const wasLiked = prev[replyId];
+      return { ...prev, [replyId]: !wasLiked };
+    });
+    setLikes(prev => {
+      const current = prev[replyId] || 0;
+      const wasLiked = likedByMe[replyId];
+      return { ...prev, [replyId]: wasLiked ? current - 1 : current + 1 };
+    });
+  };
 
   const handleReply = async () => {
     if (!replyText.trim() || !onReply) return;
@@ -102,6 +116,16 @@ export default function PostCard({ post, onReply, currentUserName }: PostCardPro
                 {reply.flaggedToxic && <Flag size={12} className="text-destructive" />}
               </div>
               <p className="text-sm text-foreground/90">{reply.content}</p>
+              <button
+                onClick={() => toggleLike(reply.id)}
+                className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive transition-colors"
+              >
+                <Heart
+                  size={14}
+                  className={likedByMe[reply.id] ? "fill-destructive text-destructive" : ""}
+                />
+                <span>{(likes[reply.id] || 0) > 0 ? likes[reply.id] : ""}</span>
+              </button>
             </div>
           ))}
         </div>
