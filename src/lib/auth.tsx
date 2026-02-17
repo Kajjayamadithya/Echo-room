@@ -26,10 +26,10 @@ function formatJoinedDate(date: Date): string {
 }
 
 const VALID_CREDENTIALS = [
-  { name: "Tarun Adithya", email: "tarunadithya2006@gmail.com", password: "Adithya123", joined: "Jan 2025" },
-  { name: "Pranav", email: "pranavkrishna2796@gmail.com", password: "pk@29", joined: "Jan 2025" },
-  { name: "Thapan", email: "thapan23@gmail.com", password: "pachipulusu@7", joined: "Feb 2025" },
-  { name: "Lokesh", email: "lokesh1@gmail.com", password: "loki@23", joined: "Feb 2025" },
+  { name: "Tarun Adithya", email: "tarunadithya2006@gmail.com", password: "Adithya123", joined: "Feb 2026" },
+  { name: "Pranav", email: "pranavkrishna2796@gmail.com", password: "pk@29", joined: "Feb2026" },
+  { name: "Thapan", email: "thapan23@gmail.com", password: "pachipulusu@7", joined: "Feb 2026" },
+  { name: "Lokesh", email: "lokesh1@gmail.com", password: "loki@23", joined: "Feb 2026" },
 ];
 
 function getRegisteredUsers(): Array<{ name: string; email: string; password: string; joined: string }> {

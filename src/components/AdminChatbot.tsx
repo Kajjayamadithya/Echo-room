@@ -7,7 +7,7 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 interface AdminChatbotProps {
   communityContext: string;
-} 
+}
 
 export default function AdminChatbot({ communityContext }: AdminChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
