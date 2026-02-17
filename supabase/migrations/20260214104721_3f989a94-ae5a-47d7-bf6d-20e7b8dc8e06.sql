@@ -9,7 +9,7 @@ CREATE TABLE public.chat_requests (
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
-
+           
 -- Private messages table
 CREATE TABLE public.private_messages (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
